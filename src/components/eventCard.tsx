@@ -10,17 +10,26 @@ import Collapse from '@material-ui/core/Collapse';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import { red } from '@material-ui/core/colors';
+import { grey, red } from '@material-ui/core/colors';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import { Button } from '@material-ui/core';
+import { Button, TextField } from '@material-ui/core';
+import { timeLineitemType } from '../shared/timeLineItemType';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      maxWidth: 345,
+      maxWidth: 500,
+      position: 'absolute',
+      bottom: 10,
+      right: 10,
+      '& > *':{
+        margin: theme.spacing(1),
+        width: '25ch',
+      },
+      backgroundColor: grey[100],
     },
     media: {
       height: 0,
@@ -42,6 +51,11 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
+
+function onAddEvent(params:timeLineitemType) {
+  return 
+}
+
 export default function RecipeReviewCard() {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
@@ -51,8 +65,8 @@ export default function RecipeReviewCard() {
   };
 
   return (
-    <Card className={classes.root}>
-      <CardHeader
+    <Card className={classes.root} variant="outlined">
+      {/* <CardHeader
         avatar={
           <Avatar aria-label="recipe" className={classes.avatar}>
             R
@@ -65,12 +79,13 @@ export default function RecipeReviewCard() {
         }
         title="Shrimp and Chorizo Paella"
         subheader="September 14, 2016"
-      />
+      /> */}
       <CardContent>
-        <Typography variant="body2" color="textSecondary" component="p">
-          This impressive paella is a perfect party dish and a fun meal to cook together with your
-          guests. Add 1 cup of frozen peas along with the mussels, if you like.
+        <Typography variant="body2" color="textSecondary" component="p" paragraph={true} >
+          Here are the input form that could help you create the event
         </Typography>
+        <TextField label="Topic" variant="outlined"></TextField>
+        <TextField id="standard-search" label="Search field" type="search" />
       </CardContent>
       <CardActions disableSpacing>
         <IconButton aria-label="add to favorites">

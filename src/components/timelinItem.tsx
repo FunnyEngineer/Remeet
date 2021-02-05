@@ -14,6 +14,7 @@ type timeLineitem =  {
     datetime : string;
     topic : string;
     content : string;
+    isLast : boolean;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -27,6 +28,31 @@ const useStyles = makeStyles((theme) => ({
 
 export function CustomTimeLineItem(params:timeLineitem) {
     const classes = useStyles();
+    if (params.isLast) {
+      return (<TimelineItem>
+        <TimelineOppositeContent>
+          <Typography variant="body2" color="textSecondary">
+          {params.datetime}
+          </Typography>
+        </TimelineOppositeContent>
+        <TimelineSeparator>
+          <TimelineDot color="primary">
+            <WorkIcon />
+          </TimelineDot>
+          <TimelineConnector></TimelineConnector>
+        </TimelineSeparator>
+        <TimelineContent>
+          <Paper elevation={3} className={classes.paper}>
+            <Typography variant="h6" component="h1">
+            {params.topic}
+            </Typography>
+            <Typography>{params.content}</Typography>
+          </Paper>
+        </TimelineContent>
+      </TimelineItem>
+      )  
+    }
+    else{
     return (
         <TimelineItem>
         <TimelineOppositeContent>
@@ -38,7 +64,6 @@ export function CustomTimeLineItem(params:timeLineitem) {
           <TimelineDot color="primary">
             <WorkIcon />
           </TimelineDot>
-          <TimelineConnector />
         </TimelineSeparator>
         <TimelineContent>
           <Paper elevation={3} className={classes.paper}>
@@ -50,4 +75,5 @@ export function CustomTimeLineItem(params:timeLineitem) {
         </TimelineContent>
       </TimelineItem>
     )
+    }
 }
