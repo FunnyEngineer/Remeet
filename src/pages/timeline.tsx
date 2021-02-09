@@ -55,8 +55,8 @@ export default function CustomizedTimeline() {
     content: 'Project ends here',
     topic: 'End',
   }
-  const startItem = <CustomTimeLineItem datetime={nowDate} content='Project starts from here' topic='Start'/>;
-  const endItem = <CustomTimeLineItem datetime={nowDate} content='Project ends here.' topic='End'/>
+  // const startItem = <CustomTimeLineItem datetime={nowDate} content='Project starts from here' topic='Start'/>;
+  // const endItem = <CustomTimeLineItem datetime={nowDate} content='Project ends here.' topic='End'/>
   const [itemList, setitemList] = useState([start, end]);
   var realList = itemList.map((item, index)=>{
     const isLast = (index == itemList.length - 1) ? true : false;

@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 
 export function CustomTimeLineItem(params:timeLineitem) {
     const classes = useStyles();
-    if (params.isLast) {
+    if (!params.isLast) {
       return (<TimelineItem>
         <TimelineOppositeContent>
           <Typography variant="body2" color="textSecondary">
