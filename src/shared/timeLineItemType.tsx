@@ -8,6 +8,7 @@ export type timeLineitemType =  {
 
 export type EventHandler = {
     handler: (event: timeLineitemType) =>  void
+    showHandler: (show: boolean) => void
   };
 
 export type ReportType = {

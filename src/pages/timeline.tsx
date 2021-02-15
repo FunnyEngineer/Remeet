@@ -12,6 +12,10 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import { EventHandler, timeLineitemType } from '../shared/timeLineItemType';
 import { Link } from 'react-router-dom';
+import { Divider, Grid } from '@material-ui/core';
+import Icon from '@material-ui/core/Icon';
+import AddIcon from '@material-ui/icons/Add';
+import ReportItemList from './reportList';
 
 const useStyles = makeStyles((theme: Theme) => ({
   paper: {
@@ -29,6 +33,18 @@ const useStyles = makeStyles((theme: Theme) => ({
   title: {
     flexGrow: 1,
   },
+  timeLine: {
+    width: window.innerWidth / 2,
+  },
+  addIcon: {
+    position: 'fixed',
+    bottom: 100,
+    right: 100,
+  },
+  table:{
+    height: window.outerHeight,
+    paddingTop: 10,
+  }
 }));
 
 export default function CustomizedTimeline() {
@@ -40,51 +56,68 @@ export default function CustomizedTimeline() {
     content: 'Project starts from here',
     topic: 'Start',
   }
-  const end : timeLineitemType = {
+  const end: timeLineitemType = {
     datetime: '',
     content: 'Project ends here',
     topic: 'End',
   }
+  const [cardShow, setCardShow] = useState(false);
   const [itemList, setitemList] = useState([start, end]);
-  var realList = itemList.map((item, index)=>{
+
+  var realList = itemList.map((item, index) => {
     const isLast = (index == itemList.length - 1) ? true : false;
-    return <CustomTimeLineItem datetime={item.datetime} content={item.content} topic={item.topic} isLast = {isLast}/>
+    return <CustomTimeLineItem datetime={item.datetime} content={item.content} topic={item.topic} isLast={isLast} />
   })
+
   // handling react hook
-  
-  const handleEvent:EventHandler= {
-    handler: (event :timeLineitemType) => {
-    console.log(event);
-    itemList.splice((itemList.length - 1), 0, event);
-    console.log(itemList);
-    setitemList([...itemList]);
-  }};
-  interface eventType {
-    eventHandler: (event: timeLineitemType) => void
-  }
+  const handleEvent: EventHandler = {
+    handler: (event: timeLineitemType) => {
+      console.log(event);
+      itemList.splice((itemList.length - 1), 0, event);
+      console.log(itemList);
+      setitemList([...itemList]);
+    },
+    showHandler: (show: boolean) => {
+      setCardShow(!show);
+    }
+  };
 
   return (
     <div>
-    
-    <div className={classes.root}>
-    <AppBar position="static">
-      <Toolbar>
-        <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-          <MenuIcon />
-        </IconButton>
-        <Typography variant="h6" className={classes.title}>
-          Remeet
+      <div className={classes.root}>
+        <AppBar position="static">
+          <Toolbar>
+            <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" className={classes.title}>
+              Remeet
         </Typography>
-        <Button component={ Link } to="/report" color="inherit" >Report</Button>
-      </Toolbar>
-    </AppBar>
-    </div>
-    <Timeline align="alternate">
-      {realList}
-    </Timeline>
-    <div>
-      <RecipeReviewCard handler={handleEvent.handler} />
-    </div>
+            <Button component={Link} to="/report" color="inherit" >Report</Button>
+          </Toolbar>
+        </AppBar>
+      </div>
+      <Grid container className={classes.table} >
+        <div className={classes.timeLine}>
+          <Timeline align="alternate">
+            {realList}
+          </Timeline>
+        </div>
+        <Divider orientation="vertical" flexItem />
+        <div>
+          <ReportItemList />
+        </div>
+      </Grid>
+
+      <div>
+        <IconButton aria-label="add" className={classes.addIcon} onClick={() => { setCardShow(!cardShow); }}>
+          <AddIcon color='primary' fontSize='large' />
+        </IconButton>
+      </div>
+      {cardShow &&
+        <RecipeReviewCard handler={handleEvent.handler}  showHandler={handleEvent.showHandler}/>
+      }
+
     </div>
   );
 }

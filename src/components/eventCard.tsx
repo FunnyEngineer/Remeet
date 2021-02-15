@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       maxWidth: 500,
-      position: 'absolute',
+      position: 'fixed',
       bottom: 10,
       right: 10,
       '& > *':{
@@ -113,7 +113,10 @@ export default function RecipeReviewCard(handleEvent: EventHandler) {
       </CardContent>
       <Grid container justify="flex-end">
         <Button variant="contained" color="primary" 
-        onClick={(prop) => handleEvent.handler(event) }>
+        onClick={(prop) => {
+          handleEvent.handler(event);
+          handleEvent.showHandler(true);
+          } }>
         Add Event
         </Button>
      </Grid>

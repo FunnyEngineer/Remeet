@@ -13,17 +13,17 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import Radio from '@material-ui/core/Radio';
 import Paper from '@material-ui/core/Paper';
-import { DndProvider, useDrag, useDrop } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-
+import { useDrag, useDrop } from 'react-dnd';
+import BuildIcon from '@material-ui/icons/Build';
+import { Card, CardContent, CardMedia } from '@material-ui/core';
+import image from './construction.jpeg';
+import CustomizedTimeline from './timeline';
 
 const useStyles = makeStyles((theme: Theme) => ({
-  paper: {
+  card: {
     position: 'relative',
-    top: 200,
-    height: 140,
-    width: 200,
-    padding: '6px 16px',
+    height: 400,
+    width: 400,
   },
   secondaryTail: {
     backgroundColor: theme.palette.secondary.main,
@@ -45,6 +45,26 @@ const useStyles = makeStyles((theme: Theme) => ({
   control: {
     padding: theme.spacing(2),
   },
+  icon: {
+    position: 'relative',
+    top: -50,
+    opacity: 0.5,
+    height: 100,
+    width: 100,
+  },
+  media: {
+    width: 400,
+    paddingTop: '56.25%', // 16:9
+  },
+  content: {
+    padding: 24,
+  },
+  grid: {
+    padding: '50px 50px',
+  },
+  timeLine:{
+    width: window.innerWidth / 2,
+  }
 }));
 
 export default function ReportItemList() {
@@ -56,18 +76,18 @@ export default function ReportItemList() {
   };
 
   const ItemTypes = {
-    KNIGHT: 'knight'
+    CARD: 'card'
   }
 
   const [{ isDragging }, drag] = useDrag({
-    item: { type: ItemTypes.KNIGHT },
+    item: { type: ItemTypes.CARD },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
   })
   const [{ canDrop, isOver }, drop] = useDrop({
-    accept: ItemTypes.KNIGHT,
-    drop: () => ({ name: 'knight' }),
+    accept: ItemTypes.CARD,
+    drop: () => ({ name: 'card' }),
     collect: (monitor) => ({
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop(),
@@ -82,43 +102,41 @@ export default function ReportItemList() {
   interface OverlayProps {
     type: OverlayType
   }
-
+  const { innerWidth: width, innerHeight: height } = window;
+  console.log(width);
   return (
     <div>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" className={classes.title}>
-            Remeet
-        </Typography>
-          <Button component={Link} to="/" color="inherit" >TimeLine</Button>
-        </Toolbar>
-      </AppBar>
-
-      <Paper
-        ref={drop}
-        className={
-          classes.root
-        }
-        elevation={5}
-      >
-        {canDrop && isOver ? 'Release to drop' : 'Drag a garbage here'}
-      </Paper>
-      <Grid container spacing={4}>
-
-        <Paper
-          ref={drag}
-          className={classes.paper}
-          style={{
-            opacity: isDragging ? 0.5 : 1,
-          }}
-          elevation={5}
-        >
-          123
-      </Paper>
-      </Grid>
+        <Grid container spacing={4} className={classes.grid}>
+          <Grid item>
+            <Card ref={drop} elevation={5} className={classes.card}>
+              {canDrop && isOver ? 'Release to drop' : 'Drag a garbage here'}
+            </Card>
+          </Grid>
+          <Grid item>
+            <Card
+              ref={drag}
+              className={classes.card}
+              style={{
+                opacity: isDragging ? 0.5 : 1,
+              }}
+              elevation={5}
+            >
+              <CardMedia className={classes.media}
+                title='Test'
+                image={image}
+              />
+              <CardContent>
+                <Typography gutterBottom variant="h5" component="h2">
+                  Edit 1
+              </Typography>
+                <Typography variant="body2" color="textSecondary" component="p">
+                  Modified 1: Element 35126... locaiton:....
+              </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          
+        </Grid>
     </div>
   );
 }
