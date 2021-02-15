@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
@@ -11,12 +11,16 @@ import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import { grey, red } from '@material-ui/core/colors';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import ShareIcon from '@material-ui/icons/Share';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import Grid, { GridSpacing } from '@material-ui/core/Grid';
 import { Button, TextField } from '@material-ui/core';
-import { timeLineitemType } from '../shared/timeLineItemType';
+import { EventHandler, timeLineitemType } from '../shared/timeLineItemType';
+import DateFnsUtils from '@date-io/date-fns';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
+
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,6 +38,12 @@ const useStyles = makeStyles((theme: Theme) =>
     media: {
       height: 0,
       paddingTop: '56.25%', // 16:9
+    },
+    textField: {
+      '& .MuiTextField-root': {
+        margin: theme.spacing(1),
+        width: 200,
+      },
     },
     expand: {
       transform: 'rotate(0deg)',
@@ -56,85 +66,57 @@ function onAddEvent(params:timeLineitemType) {
   return 
 }
 
-export default function RecipeReviewCard() {
+export default function RecipeReviewCard(handleEvent: EventHandler) {
   const classes = useStyles();
-  const [expanded, setExpanded] = React.useState(false);
 
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
+  const [targetDate, setDate] = useState<Date | null>(new Date());
+  const handleDateChange = (date: Date | null) => {
+    setDate(date);
   };
-
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const event : timeLineitemType = {
+    datetime: (targetDate as any).toLocaleDateString('en-US'),
+    topic : title,
+    content : content,
+  }
   return (
     <Card className={classes.root} variant="outlined">
-      {/* <CardHeader
-        avatar={
-          <Avatar aria-label="recipe" className={classes.avatar}>
-            R
-          </Avatar>
-        }
-        action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
-        }
-        title="Shrimp and Chorizo Paella"
-        subheader="September 14, 2016"
-      /> */}
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p" paragraph={true} >
           Here are the input form that could help you create the event
         </Typography>
-        <TextField label="Topic" variant="outlined"></TextField>
-        <TextField id="standard-search" label="Search field" type="search" />
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <Grid container  className = {classes.textField} >
+          <KeyboardDatePicker
+            disableToolbar
+            variant="inline"
+            format="MM/dd/yyyy"
+            margin="normal"
+            id="date-picker-inline"
+            label="Date picker inline"
+            value={targetDate}
+            onChange={handleDateChange}
+            KeyboardButtonProps={{
+              'aria-label': 'change date',
+            }}
+          />
+          
+          <TextField label="Topic" onChange={(event)=>{
+            setTitle(event.target.value);
+            console.log(title);}}></TextField>
+          <TextField multiline label="Content" rows={4} onChange={(event) => {
+            setContent(event.target.value)}
+            }/>
+        </Grid>
+        </MuiPickersUtilsProvider>
       </CardContent>
-      <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
-          <FavoriteIcon />
-        </IconButton>
-        <IconButton aria-label="share">
-          <ShareIcon />
-        </IconButton>
-        <IconButton
-          className={clsx(classes.expand, {
-            [classes.expandOpen]: expanded,
-          })}
-          onClick={handleExpandClick}
-          aria-expanded={expanded}
-          aria-label="show more"
-        >
-          <ExpandMoreIcon />
-        </IconButton>
-        <Button variant="contained" color="primary">
-        Primary
+      <Grid container justify="flex-end">
+        <Button variant="contained" color="primary" 
+        onClick={(prop) => handleEvent.handler(event) }>
+        Add Event
         </Button>
-      </CardActions>
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CardContent>
-          <Typography paragraph>Method:</Typography>
-          <Typography paragraph>
-            Heat 1/2 cup of the broth in a pot until simmering, add saffron and set aside for 10
-            minutes.
-          </Typography>
-          <Typography paragraph>
-            Heat oil in a (14- to 16-inch) paella pan or a large, deep skillet over medium-high
-            heat. Add chicken, shrimp and chorizo, and cook, stirring occasionally until lightly
-            browned, 6 to 8 minutes. Transfer shrimp to a large plate and set aside, leaving chicken
-            and chorizo in the pan. Add pimentón, bay leaves, garlic, tomatoes, onion, salt and
-            pepper, and cook, stirring often until thickened and fragrant, about 10 minutes. Add
-            saffron broth and remaining 4 1/2 cups chicken broth; bring to a boil.
-          </Typography>
-          <Typography paragraph>
-            Add rice and stir very gently to distribute. Top with artichokes and peppers, and cook
-            without stirring, until most of the liquid is absorbed, 15 to 18 minutes. Reduce heat to
-            medium-low, add reserved shrimp and mussels, tucking them down into the rice, and cook
-            again without stirring, until mussels have opened and rice is just tender, 5 to 7
-            minutes more. (Discard any mussels that don’t open.)
-          </Typography>
-          <Typography>
-            Set aside off of the heat to let rest for 10 minutes, and then serve.
-          </Typography>
-        </CardContent>
-      </Collapse>
+     </Grid>
     </Card>
   );
 }

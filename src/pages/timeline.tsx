@@ -1,17 +1,6 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Timeline from '@material-ui/lab/Timeline';
-import TimelineItem from '@material-ui/lab/TimelineItem';
-import TimelineSeparator from '@material-ui/lab/TimelineSeparator';
-import TimelineConnector from '@material-ui/lab/TimelineConnector';
-import TimelineContent from '@material-ui/lab/TimelineContent';
-import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent';
-import TimelineDot from '@material-ui/lab/TimelineDot';
-import FastfoodIcon from '@material-ui/icons/Fastfood';
-import LaptopMacIcon from '@material-ui/icons/LaptopMac';
-import HotelIcon from '@material-ui/icons/Hotel';
-import RepeatIcon from '@material-ui/icons/Repeat';
-import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { CustomTimeLineItem } from '../components/timelinItem';
 import RecipeReviewCard from '../components/eventCard';
@@ -21,7 +10,8 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import { timeLineitemType } from '../shared/timeLineItemType';
+import { EventHandler, timeLineitemType } from '../shared/timeLineItemType';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) => ({
   paper: {
@@ -46,23 +36,33 @@ export default function CustomizedTimeline() {
   const nowDate = new Date(Date.now()).toISOString();
 
   const start: timeLineitemType = {
-    datetime: nowDate,
+    datetime: '',
     content: 'Project starts from here',
     topic: 'Start',
   }
   const end : timeLineitemType = {
-    datetime: nowDate,
+    datetime: '',
     content: 'Project ends here',
     topic: 'End',
   }
-  // const startItem = <CustomTimeLineItem datetime={nowDate} content='Project starts from here' topic='Start'/>;
-  // const endItem = <CustomTimeLineItem datetime={nowDate} content='Project ends here.' topic='End'/>
   const [itemList, setitemList] = useState([start, end]);
   var realList = itemList.map((item, index)=>{
     const isLast = (index == itemList.length - 1) ? true : false;
     return <CustomTimeLineItem datetime={item.datetime} content={item.content} topic={item.topic} isLast = {isLast}/>
   })
-  console.log(realList)
+  // handling react hook
+  
+  const handleEvent:EventHandler= {
+    handler: (event :timeLineitemType) => {
+    console.log(event);
+    itemList.splice((itemList.length - 1), 0, event);
+    console.log(itemList);
+    setitemList([...itemList]);
+  }};
+  interface eventType {
+    eventHandler: (event: timeLineitemType) => void
+  }
+
   return (
     <div>
     
@@ -75,7 +75,7 @@ export default function CustomizedTimeline() {
         <Typography variant="h6" className={classes.title}>
           Remeet
         </Typography>
-        <Button color="inherit">Login</Button>
+        <Button component={ Link } to="/report" color="inherit" >Report</Button>
       </Toolbar>
     </AppBar>
     </div>
@@ -83,7 +83,7 @@ export default function CustomizedTimeline() {
       {realList}
     </Timeline>
     <div>
-      <RecipeReviewCard />
+      <RecipeReviewCard handler={handleEvent.handler} />
     </div>
     </div>
   );

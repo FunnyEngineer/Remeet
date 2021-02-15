@@ -1,0 +1,73 @@
+<div>
+    
+        <AppBar position="static">
+      <Toolbar>
+        <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+          <MenuIcon />
+        </IconButton>
+        <Typography variant="h6" className={classes.title}>
+          Remeet
+        </Typography>
+        <Button component={ Link } to="/" color="inherit" >TimeLine</Button>
+      </Toolbar>
+    </AppBar>
+    <div>
+    <DndProvider backend={HTML5Backend}>
+    <Grid container className={classes.root} spacing={4}>
+      <Grid item xs={12}>
+        <Grid container justify="center" spacing={spacing}>
+          {[0, 1, 2, 3].map((value) => (
+            <Grid key={value} item>
+              <Paper ref={drag}  variant="elevation" elevation={5}
+              style={{
+                opacity: isDragging ? 0.5 : 1,
+                fontSize: 25,
+                fontWeight: 'bold',
+                cursor: 'move',
+              }}>
+                <Typography gutterBottom variant="subtitle1">
+                  {value}
+                </Typography>
+              </Paper>
+            </Grid>
+          ))}
+        </Grid>
+      </Grid>
+      <Grid item xs={12}>
+        <Paper className={classes.control}>
+          <Grid container>
+            <Grid item>
+              <FormLabel>spacing</FormLabel>
+              <RadioGroup
+                name="spacing"
+                aria-label="spacing"
+                value={spacing.toString()}
+                onChange={handleChange}
+                row
+              >
+                {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((value) => (
+                  <FormControlLabel
+                    key={value}
+                    value={value.toString()}
+                    control={<Radio />}
+                    label={value.toString()}
+                  />
+                ))}
+              </RadioGroup>
+            </Grid>
+          </Grid>
+        </Paper>
+      </Grid>
+    </Grid> 
+    
+      <div
+        ref={drop}
+        className={
+         classes.root
+        }
+      >
+        {canDrop && isOver ? 'Release to drop' : 'Drag a garbage here'}
+      </div>
+    </DndProvider>
+    </div>
+    </div>

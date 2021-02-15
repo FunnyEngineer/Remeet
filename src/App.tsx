@@ -2,9 +2,22 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import CustomizedTimeline from './pages/timeline';
+import { Switch, Route, Link } from 'react-router-dom';
+import ReportItemList from './pages/reportList';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 function App() {
-  return CustomizedTimeline()
+  return (
+    <DndProvider backend={HTML5Backend}>
+  <div>
+  <switch>
+    <Route exact path='/' component={CustomizedTimeline} />
+    <Route path='/report' component={ReportItemList} />
+  </switch>
+  </div>
+  </DndProvider>
+  );
   // return (
   //   <div className="App">
   //     <header className="App-header">
