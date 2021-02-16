@@ -17,6 +17,7 @@ import Icon from '@material-ui/core/Icon';
 import AddIcon from '@material-ui/icons/Add';
 import ReportItemList from './reportList';
 
+
 const useStyles = makeStyles((theme: Theme) => ({
   paper: {
     padding: '6px 16px',
@@ -38,8 +39,8 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   addIcon: {
     position: 'fixed',
-    bottom: 100,
-    right: 100,
+    bottom: 30,
+    right: 30,
   },
   table:{
     height: window.outerHeight,
@@ -72,16 +73,14 @@ export default function CustomizedTimeline() {
   // handling react hook
   const handleEvent: EventHandler = {
     handler: (event: timeLineitemType) => {
-      console.log(event);
       itemList.splice((itemList.length - 1), 0, event);
-      console.log(itemList);
       setitemList([...itemList]);
     },
     showHandler: (show: boolean) => {
       setCardShow(!show);
     }
   };
-
+  
   return (
     <div>
       <div className={classes.root}>

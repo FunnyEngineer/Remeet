@@ -103,8 +103,7 @@ export default function RecipeReviewCard(handleEvent: EventHandler) {
           />
           
           <TextField label="Topic" onChange={(event)=>{
-            setTitle(event.target.value);
-            console.log(title);}}></TextField>
+            setTitle(event.target.value);}}></TextField>
           <TextField multiline label="Content" rows={4} onChange={(event) => {
             setContent(event.target.value)}
             }/>

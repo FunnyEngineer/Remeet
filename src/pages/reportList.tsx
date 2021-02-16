@@ -18,12 +18,13 @@ import BuildIcon from '@material-ui/icons/Build';
 import { Card, CardContent, CardMedia } from '@material-ui/core';
 import image from './construction.jpeg';
 import CustomizedTimeline from './timeline';
+import { ItemTypes } from '../shared/timeLineItemType';
 
 const useStyles = makeStyles((theme: Theme) => ({
   card: {
     position: 'relative',
-    height: 400,
-    width: 400,
+    height: 200,
+    width: 200,
   },
   secondaryTail: {
     backgroundColor: theme.palette.secondary.main,
@@ -49,8 +50,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     position: 'relative',
     top: -50,
     opacity: 0.5,
-    height: 100,
-    width: 100,
+    height: 30,
+    width: 30,
   },
   media: {
     width: 400,
@@ -75,12 +76,8 @@ export default function ReportItemList() {
     setSpacing(Number((event.target as HTMLInputElement).value) as GridSpacing);
   };
 
-  const ItemTypes = {
-    CARD: 'card'
-  }
-
   const [{ isDragging }, drag] = useDrag({
-    item: { type: ItemTypes.CARD },
+    item: { title: 'test', content:'make a list', type: ItemTypes.CARD },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
@@ -102,8 +99,7 @@ export default function ReportItemList() {
   interface OverlayProps {
     type: OverlayType
   }
-  const { innerWidth: width, innerHeight: height } = window;
-  console.log(width);
+  
   return (
     <div>
         <Grid container spacing={4} className={classes.grid}>
@@ -126,7 +122,7 @@ export default function ReportItemList() {
                 image={image}
               />
               <CardContent>
-                <Typography gutterBottom variant="h5" component="h2">
+                <Typography gutterBottom variant="h5" component="h3">
                   Edit 1
               </Typography>
                 <Typography variant="body2" color="textSecondary" component="p">

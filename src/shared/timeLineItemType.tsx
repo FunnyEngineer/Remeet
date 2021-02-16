@@ -1,5 +1,4 @@
 
-
 export type timeLineitemType =  {
     datetime : string;
     topic : string;
@@ -15,4 +14,8 @@ export type ReportType = {
   author : string;
   report : string;
   type : string;
+};
+
+export const ItemTypes = {
+  CARD: 'card'
 };
