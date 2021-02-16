@@ -37,12 +37,15 @@ const useStyles = makeStyles((theme: Theme) => ({
   timeLine: {
     width: window.innerWidth / 2,
   },
+  fullTimeLine: {
+    flexGrow: 1,
+  },
   addIcon: {
     position: 'fixed',
     bottom: 30,
     right: 30,
   },
-  table:{
+  table: {
     height: window.outerHeight,
     paddingTop: 10,
   }
@@ -63,11 +66,12 @@ export default function CustomizedTimeline() {
     topic: 'End',
   }
   const [cardShow, setCardShow] = useState(false);
+  const [reportShow, setReportShow] = useState(false);
   const [itemList, setitemList] = useState([start, end]);
 
   var realList = itemList.map((item, index) => {
     const isLast = (index == itemList.length - 1) ? true : false;
-    return <CustomTimeLineItem datetime={item.datetime} content={item.content} topic={item.topic} isLast={isLast} />
+    return <CustomTimeLineItem datetime={item.datetime} content={item.content} topic={item.topic} isLast={isLast} index={index} />
   })
 
   // handling react hook
@@ -80,7 +84,7 @@ export default function CustomizedTimeline() {
       setCardShow(!show);
     }
   };
-  
+
   return (
     <div>
       <div className={classes.root}>
@@ -91,21 +95,30 @@ export default function CustomizedTimeline() {
             </IconButton>
             <Typography variant="h6" className={classes.title}>
               Remeet
-        </Typography>
-            <Button component={Link} to="/report" color="inherit" >Report</Button>
+            </Typography>
+            <div>
+            <Button color="inherit" onClick={() => {setReportShow(!reportShow)}} >
+              {reportShow ? 'Report off' : 'Report on'}
+            </Button>
+            </div>
           </Toolbar>
         </AppBar>
       </div>
       <Grid container className={classes.table} >
-        <div className={classes.timeLine}>
+        <div className={reportShow ? classes.timeLine : classes.fullTimeLine}>
           <Timeline align="alternate">
             {realList}
           </Timeline>
         </div>
-        <Divider orientation="vertical" flexItem />
-        <div>
+        { reportShow &&
+          <Divider orientation="vertical" flexItem />
+        }
+        { reportShow &&
+          <div>
           <ReportItemList />
-        </div>
+          </div>
+        }
+        
       </Grid>
 
       <div>
@@ -114,7 +127,7 @@ export default function CustomizedTimeline() {
         </IconButton>
       </div>
       {cardShow &&
-        <RecipeReviewCard handler={handleEvent.handler}  showHandler={handleEvent.showHandler}/>
+        <RecipeReviewCard handler={handleEvent.handler} showHandler={handleEvent.showHandler} />
       }
 
     </div>

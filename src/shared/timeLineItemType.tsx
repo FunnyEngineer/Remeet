@@ -19,3 +19,10 @@ export type ReportType = {
 export const ItemTypes = {
   CARD: 'card'
 };
+
+export interface DragItem {
+  author : string;
+  report : string;
+  editType : string;
+  type: string
+}

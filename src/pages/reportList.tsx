@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { FC, useState } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
@@ -18,7 +18,7 @@ import BuildIcon from '@material-ui/icons/Build';
 import { Card, CardContent, CardMedia } from '@material-ui/core';
 import image from './construction.jpeg';
 import CustomizedTimeline from './timeline';
-import { ItemTypes } from '../shared/timeLineItemType';
+import { DragItem, ItemTypes, ReportType } from '../shared/timeLineItemType';
 
 const useStyles = makeStyles((theme: Theme) => ({
   card: {
@@ -30,11 +30,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundColor: theme.palette.secondary.main,
   },
   root: {
-    position: 'relative',
-    top: 50,
-    height: 140,
-    width: 100,
-    padding: '6px 16px',
+    position: 'absolute',
     flexGrow: 1,
   },
   menuButton: {
@@ -54,8 +50,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: 30,
   },
   media: {
-    width: 400,
-    paddingTop: '56.25%', // 16:9
+    width: 300,
+    paddingTop: '40.25%', // 16:9
   },
   content: {
     padding: 24,
@@ -63,21 +59,69 @@ const useStyles = makeStyles((theme: Theme) => ({
   grid: {
     padding: '50px 50px',
   },
-  timeLine:{
+  timeLine: {
     width: window.innerWidth / 2,
   }
 }));
 
+let ReportCard: FC<DragItem> = ({ author, report, editType }) => {
+  const classes = useStyles();
+  const [{ isDragging }, drag] = useDrag({
+    item: { author:author , report:report, editType:editType, type: ItemTypes.CARD },
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+  })
+  return (
+    <Card
+      ref={drag}
+      className={classes.card}
+      style={{
+        opacity: isDragging ? 0.5 : 1,
+      }}
+      elevation={5}
+    >
+      <CardMedia className={classes.media}
+        title='Test'
+        image={image}
+      />
+      <CardContent>
+        <Typography gutterBottom variant="h5" component="h3">
+          {author}
+        </Typography>
+        <Typography variant="body2" color="textSecondary" component="p">
+          {report}
+        </Typography>
+      </CardContent>
+    </Card>
+  )
+}
+
 export default function ReportItemList() {
   const classes = useStyles();
   const [spacing, setSpacing] = React.useState<GridSpacing>(2);
-
+  const example1: ReportType = {
+    author: 'Kevin',
+    report: '2021/2/19 element variables...',
+    type: 'Modified',
+  }
+  const example2: ReportType = {
+    author: 'Ting-Yu',
+    report: '2021/2/21 element id: 35962...',
+    type: 'Deleted',
+  }
+  const example3: ReportType = {
+    author: 'Tim',
+    report: '2021/2/22 element id: 94562...',
+    type: 'Created',
+  }
+  const [reportList, setReportList] = React.useState([example1]);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSpacing(Number((event.target as HTMLInputElement).value) as GridSpacing);
   };
 
   const [{ isDragging }, drag] = useDrag({
-    item: { title: 'test', content:'make a list', type: ItemTypes.CARD },
+    item: { title: 'test', content: 'make a list', type: ItemTypes.CARD },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
@@ -99,40 +143,26 @@ export default function ReportItemList() {
   interface OverlayProps {
     type: OverlayType
   }
-  
+
   return (
-    <div>
-        <Grid container spacing={4} className={classes.grid}>
-          <Grid item>
-            <Card ref={drop} elevation={5} className={classes.card}>
-              {canDrop && isOver ? 'Release to drop' : 'Drag a garbage here'}
-            </Card>
-          </Grid>
-          <Grid item>
-            <Card
-              ref={drag}
-              className={classes.card}
-              style={{
-                opacity: isDragging ? 0.5 : 1,
-              }}
-              elevation={5}
-            >
-              <CardMedia className={classes.media}
-                title='Test'
-                image={image}
-              />
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="h3">
-                  Edit 1
-              </Typography>
-                <Typography variant="body2" color="textSecondary" component="p">
-                  Modified 1: Element 35126... locaiton:....
-              </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          
+    <div className={classes.root}>
+      <Grid container spacing={3} className={classes.grid}>
+        <Grid item xs={6} sm={3}>
+          <ReportCard author={example1.author} report={example1.report} editType={example1.type} type={ItemTypes.CARD} />
         </Grid>
+        <Grid item xs={6} sm={3}>
+          <ReportCard author={example2.author} report={example2.report} editType={example2.type} type={ItemTypes.CARD} />
+        </Grid>
+        <Grid item xs={6} sm={3}>
+          <ReportCard author={example3.author} report={example3.report} editType={example3.type} type={ItemTypes.CARD} />
+        </Grid>
+        <Grid item xs={6} sm={3}>
+          <ReportCard author={example1.author} report={example1.report} editType={example1.type} type={ItemTypes.CARD} />
+        </Grid>
+        <Grid item xs={6} sm={3}>
+          <ReportCard author={example2.author} report={example2.report} editType={example2.type} type={ItemTypes.CARD} />
+        </Grid>
+      </Grid>
     </div>
   );
 }

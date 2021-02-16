@@ -10,16 +10,19 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import WorkIcon from '@material-ui/icons/Work';
 import Avatar from '@material-ui/core/Avatar';
+import Checkbox from '@material-ui/core/Checkbox';
 import { useDrop } from 'react-dnd';
-import { ItemTypes } from '../shared/timeLineItemType';
-import { List, ListItem, ListItemAvatar, ListItemText } from '@material-ui/core';
+import { DragItem, ItemTypes } from '../shared/timeLineItemType';
+import { IconButton, List, ListItem, ListItemAvatar, ListItemIcon, ListItemSecondaryAction, ListItemText } from '@material-ui/core';
 import { useState } from 'react';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 type timeLineitem = {
   datetime: string;
   topic: string;
   content: string;
   isLast: boolean;
+  index: number;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -32,26 +35,94 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-
 export function CustomTimeLineItem(params: timeLineitem) {
 
-  const [reportList, setreportList] = useState([]);
+  const [reportList , setreportList] = useState<DragItem[]>([]);
   const [{ canDrop, isOver }, drop] = useDrop({
     accept: ItemTypes.CARD,
-    drop: (item) => (console.log(item.title)),
+    drop: (item: DragItem) => (handleReport(item)),
     collect: (monitor) => ({
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop(),
     }),
   });
-  if (params.content.includes('\n')) {
-    console.log(params.content.split('\n')[0]);
+
+  //handle report
+  const handleReport = (item: DragItem) => {
+    console.log(item);
+    setreportList(reportList.concat([item]));
+    console.log(reportList);
   }
+  const reportRender = reportList.map((value, index) => {
+    return (
+      <ListItem alignItems="flex-start">
+        <ListItemText primary={value.editType} secondary={<Typography>{value.report}</Typography>} />
+      </ListItem>
+    )
+  })
+
+  const [reportCBList, setreportCBList] = useState(params.content.split('\n').map(() => false));
+  const contentList = params.content.split('\n').map((value, index) => {
+
+    const labelId = value;
+    return (
+      <ListItem key={value} role={undefined} dense button onClick={() => {
+        reportCBList[index] = !reportCBList[index];
+        setreportCBList([...reportCBList]);
+      }}>
+        <ListItemIcon>
+          <Checkbox
+            edge="start"
+            checked={reportCBList[index]}
+            tabIndex={-1}
+            disableRipple
+            inputProps={{ 'aria-labelledby': labelId }}
+          />
+        </ListItemIcon>
+        <ListItemText id={labelId} primary={value} />
+        <ListItemSecondaryAction>
+          <IconButton edge="end" aria-label="comments">
+            <CancelIcon />
+          </IconButton>
+        </ListItemSecondaryAction>
+      </ListItem>
+    );
+  })
 
   const classes = useStyles();
   if (!params.isLast) {
-    return (
-      <TimelineItem ref={drop}>
+    if (params.index != 0) {
+      return (
+        <TimelineItem ref={drop}>
+          <TimelineOppositeContent>
+            <Typography variant="body2" color="textSecondary">
+              {params.datetime}
+              {canDrop && isOver ? 'Release to drop' : ''}
+            </Typography>
+          </TimelineOppositeContent>
+          <TimelineSeparator>
+            <TimelineDot color="primary">
+              <WorkIcon />
+            </TimelineDot>
+            <TimelineConnector></TimelineConnector>
+          </TimelineSeparator>
+          <TimelineContent>
+            <Paper elevation={3} className={classes.paper}>
+              <Typography variant="h6" component="h1">
+                {params.topic}
+              </Typography>
+              <List>
+              {contentList}
+              {reportRender}
+              </List>
+            </Paper>
+          </TimelineContent>
+        </TimelineItem>
+      )
+    }
+
+    else {
+      return (<TimelineItem ref={drop}>
         <TimelineOppositeContent>
           <Typography variant="body2" color="textSecondary">
             {params.datetime}
@@ -71,14 +142,12 @@ export function CustomTimeLineItem(params: timeLineitem) {
             </Typography>
             <Typography>{params.content}</Typography>
             <List>
-              {reportList.map((value) => {
-                <ListItemText primary={value} secondary={value}></ListItemText>
-              })}
             </List>
           </Paper>
         </TimelineContent>
-      </TimelineItem>
-    )
+      </TimelineItem>)
+
+    }
   }
   else {
     return (
@@ -100,16 +169,6 @@ export function CustomTimeLineItem(params: timeLineitem) {
               {params.topic}
             </Typography>
             <Typography>{params.content}</Typography>
-            <List>
-              <ListItem>
-                <ListItemAvatar>
-                  <Avatar>
-                    <WorkIcon />
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText primary="Photos" secondary="Jan 9, 2014" />
-              </ListItem>
-            </List>
           </Paper>
         </TimelineContent>
       </TimelineItem>
